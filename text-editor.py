@@ -21,17 +21,17 @@ class Main(QtWidgets.QMainWindow):
         self.initUI()
     def initToolbar(self):
 
-        self.newAction = QtGui.QAction(QtGui.QIcon("icons/new.png"),"New",self)
+        self.newAction = QtWidgets.QAction(QtGui.QIcon("icons/new.png"),"New",self)
         self.newAction.setStatusTip("Create a new document from scratch.")
         self.newAction.setShortcut("Ctrl+N")
         self.newAction.triggered.connect(self.new)
 
-        self.openAction = QtGui.QAction(QtGui.QIcon("icons/open.png"),"Open file",self)
+        self.openAction = QtWidgets.QAction(QtGui.QIcon("icons/open.png"),"Open file",self)
         self.openAction.setStatusTip("Open existing document")
         self.openAction.setShortcut("Ctrl+O")
         self.openAction.triggered.connect(self.open)
 
-        self.saveAction = QtGui.QAction(QtGui.QIcon("icons/save.png"),"Save",self)
+        self.saveAction = QtWidgets.QAction(QtGui.QIcon("icons/save.png"),"Save",self)
         self.saveAction.setStatusTip("Save document")
         self.saveAction.setShortcut("Ctrl+S")
         self.saveAction.triggered.connect(self.save)
