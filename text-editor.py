@@ -77,23 +77,28 @@ class Main(QtWidgets.QMainWindow):
     def initUI(self):
         
         self.text = QtWidgets.QTextEdit(self)
-        self.setCentralWidget(self.text)
-
+        
         self.initToolbar()
         self.initFormatbar()
         self.initMenubar()
 
+        self.text.setTabStopWidth(33)
+
+        self.setCentralWidget(self.text)
+
         # Initialize a statusbar for the window
         self.statusbar = self.statusBar()
+
+        self.text.cursorPositionChanged.connect(self.cursorPosition)
 
         # x and y coordinates on the screen, width, height
         self.setGeometry(100,100,1030,800)
 
         self.setWindowTitle("Awesome Text Editor")
 
-        self.text.setTabStopWidth(33)
+        
         self.setWindowIcon(QtWidgets.QIcon("icons/icon.png"))
-        self.text.cursorPositionChanged.connect(self.cursorPosition)
+        
 
     def new(self):
 
@@ -107,22 +112,27 @@ class Main(QtWidgets.QMainWindow):
 
         if self.filename:
             with open(self.filename,"rt") as file:
-                    self.text.setText(file.read())
+                self.text.setText(file.read())
 
     def save(self):
 
         # Only open dialog if there is no filename yet
         if not self.filename:
-            self.filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File')
+            self.filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File')[0]
 
-        # Append extension if not there yet
-        if not self.filename.endswith(".writer"):
-            self.filename += ".writer"
+        if self.filename:
 
-        # We just store the contents of the text file along with the
-        # format in html, which Qt does in a very nice way for us
+            # Append extension if not there yet
+            if not self.filename.endswith(".txt"):
+                self.filename += ".txt"
+
+            # We just store the contents of the text file along with the
+            # format in html, which Qt does in a very nice way for us
             with open(self.filename,"wt") as file:
                 file.write(self.text.toHtml())
+
+            self.changesSaved = True
+
 
     def preview(self):
 
@@ -134,10 +144,10 @@ class Main(QtWidgets.QMainWindow):
 
         preview.exec_()
 
-    def print(self):
+    def printHandler(self):
 
         # Open printing dialog
-        dialog = QtWidgets.QPrintDialog()
+        dialog = QtPrintSupport.QPrintDialog()
 
         if dialog.exec_() == QtWidgets.QDialog.Accepted:
             self.text.document().print_(dialog.printer())
@@ -150,14 +160,14 @@ class Main(QtWidgets.QMainWindow):
         cursor = self.text.textCursor()
 
         # Insert bulleted list
-        cursor.insertList(QtWidgets.QTextListFormat.ListDisc)
+        cursor.insertList(QtGui.QTextListFormat.ListDisc)
 
     def numberList(self):
 
         cursor = self.text.textCursor()
 
         # Insert list with numbers
-        cursor.insertList(QtWidgets.QTextListFormat.ListDecimal)
+        cursor.insertList(QtGui.QTextListFormat.ListDecimal)
 
     def cursorPosition(self):
 
