@@ -18,7 +18,7 @@ class Main(QtWidgets.QMainWindow):
 
         self.initUI()
     def initToolbar(self):
-
+        
         self.toolbar = self.addToolBar("Options")
 
         # Makes the next toolbar appear underneath this one
@@ -71,7 +71,7 @@ class Main(QtWidgets.QMainWindow):
         self.setWindowIcon(QtWidgets.QIcon("icons/icon.png"))
         self.text.cursorPositionChanged.connect(self.cursorPosition)
 
-        def new(self):
+    def new(self):
 
         spawn = Main(self)
         spawn.show()
@@ -83,7 +83,7 @@ class Main(QtWidgets.QMainWindow):
 
         if self.filename:
             with open(self.filename,"rt") as file:
-            self.text.setText(file.read())
+                    self.text.setText(file.read())
 
     def save(self):
 
@@ -98,17 +98,17 @@ class Main(QtWidgets.QMainWindow):
         # We just store the contents of the text file along with the
         # format in html, which Qt does in a very nice way for us
             with open(self.filename,"wt") as file:
-            file.write(self.text.toHtml())
+                file.write(self.text.toHtml())
 
     def preview(self):
 
     # Open preview dialog
-    preview = QtWidgets.QPrintPreviewDialog()
+        preview = QtWidgets.QPrintPreviewDialog()
 
     # If a print is requested, open print dialog
-    preview.paintRequested.connect(lambda p: self.text.print_(p))
+        preview.paintRequested.connect(lambda p: self.text.print_(p))
 
-    preview.exec_()
+        preview.exec_()
 
     def print(self):
 
@@ -119,14 +119,7 @@ class Main(QtWidgets.QMainWindow):
             self.text.document().print_(dialog.printer())
 
 
-    def main():
-
-        app = QtWidgets.QApplication(sys.argv)
-
-        main = Main()
-        main.show()
-
-        sys.exit(app.exec_())
+    
 
     def bulletList(self):
 
@@ -151,6 +144,15 @@ class Main(QtWidgets.QMainWindow):
         col = cursor.columnNumber()
 
         self.statusbar.showMessage("Line: {} | Column: {}".format(line,col))
+        
+    def main():
 
-if __name__ == "__main__":
-    main()
+        app = QtWidgets.QApplication(sys.argv)
+
+        main = Main()
+        main.show()
+
+        sys.exit(app.exec_())
+
+    if __name__ == "__main__":
+        main()
