@@ -16,10 +16,34 @@ class Main(QtWidgets.QMainWindow):
     def __init__(self, parent = None):
         QtWidgets.QMainWindow.__init__(self,parent)
 
+        self.filename = ""
+
         self.initUI()
     def initToolbar(self):
-        
+
+        self.newAction = QtWidgets.QAction(QtGui.QIcon("icons/new.png"),"New",self)
+        self.newAction.setStatusTip("Create a new document from scratch.")
+        self.newAction.setShortcut("Ctrl+N")
+        self.newAction.triggered.connect(self.new)
+
+        self.openAction = QtWidgets.QAction(QtGui.QIcon("icons/open.png"),"Open file",self)
+        self.openAction.setStatusTip("Open existing document")
+        self.openAction.setShortcut("Ctrl+O")
+        self.openAction.triggered.connect(self.open)
+
+        self.saveAction = QtWidgets.QAction(QtGui.QIcon("icons/save.png"),"Save",self)
+        self.saveAction.setStatusTip("Save document")
+        self.saveAction.setShortcut("Ctrl+S")
+        self.saveAction.triggered.connect(self.save)
+
         self.toolbar = self.addToolBar("Options")
+
+        self.toolbar.addAction(self.newAction)
+        self.toolbar.addAction(self.openAction)
+        self.toolbar.addAction(self.saveAction)
+
+        self.toolbar.addSeparator()
+
 
         # Makes the next toolbar appear underneath this one
         self.addToolBarBreak()
