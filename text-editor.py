@@ -17,8 +17,36 @@ class Main(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self,parent)
 
         self.initUI()
+    def initToolbar(self):
+
+        self.toolbar = self.addToolBar("Options")
+
+        # Makes the next toolbar appear underneath this one
+        self.addToolBarBreak()
+
+    def initFormatbar(self):
+
+        self.formatbar = self.addToolBar("Format")
+
+    def initMenubar(self):
+
+        menubar = self.menuBar()
+
+        file = menubar.addMenu("File")
+        edit = menubar.addMenu("Edit")
+        view = menubar.addMenu("View")     
 
     def initUI(self):
+        
+        self.text = QtWidgets.QTextEdit(self)
+        self.setCentralWidget(self.text)
+
+        self.initToolbar()
+        self.initFormatbar()
+        self.initMenubar()
+
+        # Initialize a statusbar for the window
+        self.statusbar = self.statusBar()
 
         # x and y coordinates on the screen, width, height
         self.setGeometry(100,100,1030,800)
