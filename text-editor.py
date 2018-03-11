@@ -18,7 +18,7 @@ class Main(QtWidgets.QMainWindow):
 
         self.initUI()
     def initToolbar(self):
-
+        
         self.toolbar = self.addToolBar("Options")
 
         # Makes the next toolbar appear underneath this one
@@ -34,7 +34,21 @@ class Main(QtWidgets.QMainWindow):
 
         file = menubar.addMenu("File")
         edit = menubar.addMenu("Edit")
-        view = menubar.addMenu("View")     
+        view = menubar.addMenu("View")    
+
+        file.addAction(self.newAction)
+        file.addAction(self.openAction)
+        file.addAction(self.saveAction) 
+        file.addAction(self.printAction)
+        file.addAction(self.previewAction)
+
+        edit.addAction(self.undoAction)
+        edit.addAction(self.redoAction)
+        edit.addAction(self.cutAction)
+        edit.addAction(self.copyAction)
+        edit.addAction(self.pasteAction)
+
+
 
     def initUI(self):
         
@@ -53,14 +67,92 @@ class Main(QtWidgets.QMainWindow):
 
         self.setWindowTitle("Awesome Text Editor")
 
-def main():
+        self.text.setTabStopWidth(33)
+        self.setWindowIcon(QtWidgets.QIcon("icons/icon.png"))
+        self.text.cursorPositionChanged.connect(self.cursorPosition)
 
-    app = QtWidgets.QApplication(sys.argv)
+    def new(self):
 
-    main = Main()
-    main.show()
+        spawn = Main(self)
+        spawn.show()
 
-    sys.exit(app.exec_())
+    def open(self):
 
-if __name__ == "__main__":
-    main()
+        # Get filename and show only .writer files
+        self.filename = QtWidgets.QFileDialog.getOpenFileName(self, 'Open File',".","(*.writer)")
+
+        if self.filename:
+            with open(self.filename,"rt") as file:
+                    self.text.setText(file.read())
+
+    def save(self):
+
+        # Only open dialog if there is no filename yet
+        if not self.filename:
+            self.filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File')
+
+        # Append extension if not there yet
+        if not self.filename.endswith(".writer"):
+            self.filename += ".writer"
+
+        # We just store the contents of the text file along with the
+        # format in html, which Qt does in a very nice way for us
+            with open(self.filename,"wt") as file:
+                file.write(self.text.toHtml())
+
+    def preview(self):
+
+    # Open preview dialog
+        preview = QtWidgets.QPrintPreviewDialog()
+
+    # If a print is requested, open print dialog
+        preview.paintRequested.connect(lambda p: self.text.print_(p))
+
+        preview.exec_()
+
+    def print(self):
+
+        # Open printing dialog
+        dialog = QtWidgets.QPrintDialog()
+
+        if dialog.exec_() == QtWidgets.QDialog.Accepted:
+            self.text.document().print_(dialog.printer())
+
+
+    
+
+    def bulletList(self):
+
+        cursor = self.text.textCursor()
+
+        # Insert bulleted list
+        cursor.insertList(QtWidgets.QTextListFormat.ListDisc)
+
+    def numberList(self):
+
+        cursor = self.text.textCursor()
+
+        # Insert list with numbers
+        cursor.insertList(QtWidgets.QTextListFormat.ListDecimal)
+
+    def cursorPosition(self):
+
+        cursor = self.text.textCursor()
+
+        # Mortals like 1-indexed things
+        line = cursor.blockNumber() + 1
+        col = cursor.columnNumber()
+
+        self.statusbar.showMessage("Line: {} | Column: {}".format(line,col))
+        
+    def main():
+
+        app = QtWidgets.QApplication(sys.argv)
+
+        main = Main()
+        main.show()
+
+        sys.exit(app.exec_())
+
+    if __name__ == "__main__":
+        main()
